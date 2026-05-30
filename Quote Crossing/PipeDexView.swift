@@ -42,14 +42,12 @@ struct PipeDexView: View {
     
     public var body: some View {
         ZStack {
-            // Dark professional slate background (CRM Terminal Vibe)
-            Color(red: 0.08, green: 0.10, blue: 0.13)
-                .ignoresSafeArea()
+            QuotaBackdrop(tint: QuotaOS.Colors.blue, tone: .campus)
             
             VStack(spacing: 0) {
                 // MARK: - Premium Glassmorphic Header
                 headerView
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, 28)
                     .padding(.top, 12)
                     .padding(.bottom, 16)
                 
@@ -90,8 +88,13 @@ struct PipeDexView: View {
                 .padding(.bottom, 16)
                 .background(
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(Color(red: 0.12, green: 0.14, blue: 0.18))
-                        .shadow(color: .black.opacity(0.35), radius: 12, y: -8)
+                        .fill(Color.white.opacity(0.86))
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .stroke(QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1)
+                        )
+                        .shadow(color: QuotaOS.Colors.logoInk.opacity(0.12), radius: 14, y: -6)
                 )
                 .zIndex(8)
             }
@@ -106,7 +109,7 @@ struct PipeDexView: View {
                 LeadCardView(lead: lead, size: cellSize)
                     .scaleEffect(1.18)
                     .rotationEffect(.degrees(5))
-                    .shadow(color: .black.opacity(0.5), radius: 12, y: 10)
+                    .shadow(color: QuotaOS.Colors.logoInk.opacity(0.24), radius: 12, y: 10)
                     .position(
                         x: frame.midX + viewModel.dragOffset.width,
                         y: frame.midY + viewModel.dragOffset.height
@@ -129,6 +132,8 @@ struct PipeDexView: View {
                     .zIndex(160)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(QuotaBackdrop(tint: QuotaOS.Colors.blue, tone: .campus))
         .statusBarHidden()
         .onReceive(bandwidthRegenTimer) { _ in
             if gameState.bandwidth < gameState.maxBandwidth {
@@ -150,11 +155,11 @@ struct PipeDexView: View {
                 Text("PIPE-DEX CRM v3.0")
                     .font(.system(size: 11, weight: .heavy, design: .rounded))
                     .tracking(1.2)
-                    .foregroundStyle(Color(red: 0.40, green: 0.66, blue: 0.98))
+                    .foregroundStyle(QuotaOS.Colors.blue)
                 
                 Text("Casual Lead Farming")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(QuotaOS.Colors.logoInk)
             }
             
             Spacer()
@@ -167,10 +172,11 @@ struct PipeDexView: View {
             }) {
                 Image(systemName: "xmark")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.74))
                     .frame(width: 32, height: 32)
-                    .background(Color.white.opacity(0.1), in: Circle())
-                    .overlay(Circle().stroke(Color.white.opacity(0.15), lineWidth: 1))
+                    .background(Color.white.opacity(0.82), in: Circle())
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(Circle().stroke(QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1))
             }
             .buttonStyle(.plain)
         }
@@ -221,14 +227,15 @@ struct PipeDexView: View {
             // Leads count
             Text("\(viewModel.filledCount)/63 Slots")
                 .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(.white.opacity(0.6))
+                .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.60))
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color.white.opacity(0.04))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Color.white.opacity(0.08), lineWidth: 1))
+                .fill(Color.white.opacity(0.76))
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(QuotaOS.Colors.logoInk.opacity(0.08), lineWidth: 1))
         )
     }
     
@@ -284,11 +291,21 @@ struct PipeDexView: View {
             } else {
                 // Render Empty Slot Grid Slot
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(Color(red: 0.12, green: 0.14, blue: 0.18))
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.72),
+                                QuotaOS.Colors.campusBlue.opacity(0.24),
+                                QuotaOS.Colors.campusMint.opacity(0.14)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(
-                                isHovered ? Color.green.opacity(0.6) : Color.white.opacity(0.08),
+                                isHovered ? QuotaOS.Colors.green.opacity(0.62) : QuotaOS.Colors.logoInk.opacity(0.10),
                                 style: StrokeStyle(lineWidth: isHovered ? 2.5 : 1.5, lineCap: .round, dash: isHovered ? [] : [4, 4])
                             )
                     )
@@ -340,11 +357,11 @@ struct PipeDexView: View {
                         VStack(alignment: .leading, spacing: 3) {
                             Text("Closed-Lost Weed")
                                 .font(.system(size: 15, weight: .bold, design: .rounded))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(QuotaOS.Colors.logoInk)
                             
                             Text(lead.weedDescription)
                                 .font(.system(size: 11, weight: .medium))
-                                .foregroundStyle(.white.opacity(0.6))
+                                .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.58))
                                 .lineLimit(3)
                         }
                     }
@@ -372,14 +389,14 @@ struct PipeDexView: View {
                             HStack(spacing: 6) {
                                 Text(lead.name)
                                     .font(.system(size: 16, weight: .black, design: .rounded))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(QuotaOS.Colors.logoInk)
                                 
                                 Text("L\(lead.level)")
                                     .font(.system(size: 10, weight: .heavy, design: .rounded))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(QuotaOS.Colors.logoInk)
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 2)
-                                    .background(Color.black.opacity(0.35), in: Capsule())
+                                    .background(QuotaOS.Colors.logoInk.opacity(0.08), in: Capsule())
                             }
                             
                             HStack(spacing: 3) {
@@ -388,7 +405,7 @@ struct PipeDexView: View {
                                     .foregroundStyle(Color(red: 0.18, green: 0.72, blue: 0.48))
                                 Text("Commission Payout: ")
                                     .font(.system(size: 11, weight: .bold))
-                                    .foregroundStyle(.white.opacity(0.5))
+                                    .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.52))
                                 Text("+\(lead.yield)")
                                     .font(.system(size: 11, weight: .black))
                                     .foregroundStyle(Color(red: 0.18, green: 0.72, blue: 0.48))
@@ -403,11 +420,11 @@ struct PipeDexView: View {
                                 HStack(spacing: 8) {
                                     Text("Freshness:")
                                         .font(.system(size: 9, weight: .heavy))
-                                        .foregroundStyle(.white.opacity(0.4))
+                                        .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.46))
                                     
                                     GeometryReader { barGeo in
                                         ZStack(alignment: .leading) {
-                                            Capsule().fill(.white.opacity(0.08))
+                                            Capsule().fill(QuotaOS.Colors.logoInk.opacity(0.10))
                                             Capsule()
                                                 .fill(progress > 0.5 ? Color.green : (progress > 0.2 ? Color.orange : Color.red))
                                                 .frame(width: barGeo.size.width * progress)
@@ -417,7 +434,7 @@ struct PipeDexView: View {
                                     
                                     Text("\(Int(remaining))s")
                                         .font(.system(size: 9, weight: .bold, design: .rounded))
-                                        .foregroundStyle(.white.opacity(0.5))
+                                        .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.52))
                                         .monospacedDigit()
                                 }
                                 .frame(height: 12)
@@ -433,7 +450,7 @@ struct PipeDexView: View {
                     .padding(.top, 8)
                     .padding(.horizontal, 8)
                     
-                    Divider().background(Color.white.opacity(0.08))
+                    Divider().background(QuotaOS.Colors.logoInk.opacity(0.08))
                     
                     // Interaction Buttons: Follow Up / Claim
                     HStack(spacing: 12) {
@@ -504,17 +521,17 @@ struct PipeDexView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "funnel.fill")
                         .font(.system(size: 26))
-                        .foregroundStyle(.white.opacity(0.15))
+                        .foregroundStyle(QuotaOS.Colors.blue.opacity(0.22))
                         .padding(.top, 8)
                     
                     Text("PIPELINE INSPECTOR")
                         .font(.system(size: 11, weight: .heavy, design: .rounded))
                         .tracking(1.0)
-                        .foregroundStyle(.white.opacity(0.3))
+                        .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.44))
                     
                     Text("Select a card in the grid above to close contracts, nurture prospects, or check decay timelines.")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.4))
+                        .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.52))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 24)
                         .padding(.bottom, 8)
@@ -526,8 +543,9 @@ struct PipeDexView: View {
         .padding(10)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color.white.opacity(0.03))
-                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Color.white.opacity(0.06), lineWidth: 1.2))
+                .fill(Color.white.opacity(0.70))
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(QuotaOS.Colors.logoInk.opacity(0.08), lineWidth: 1.2))
         )
     }
     
@@ -554,7 +572,7 @@ struct PipeDexView: View {
                     }
                     Text("Costs \(viewModel.spamDialerCost) Bandwidth")
                         .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.6))
+                        .foregroundStyle(.white.opacity(0.72))
                 }
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -588,22 +606,22 @@ struct PipeDexView: View {
                     }
                     Text(isOnCooldown ? "On Cooldown" : "Instant Spawn (Free)")
                         .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(isOnCooldown ? .white.opacity(0.4) : Color(red: 0.95, green: 0.80, blue: 0.30))
+                        .foregroundStyle(isOnCooldown ? QuotaOS.Colors.logoInk.opacity(0.42) : Color.white.opacity(0.78))
                 }
-                .foregroundStyle(.white)
+                .foregroundStyle(isOnCooldown ? QuotaOS.Colors.logoInk.opacity(0.50) : .white)
                 .frame(maxWidth: .infinity)
                 .frame(height: 52)
                 .background(
                     isOnCooldown ?
-                    LinearGradient(colors: [Color(red: 0.22, green: 0.24, blue: 0.28), Color(red: 0.16, green: 0.18, blue: 0.21)], startPoint: .top, endPoint: .bottom) :
-                    LinearGradient(colors: [Color(red: 0.32, green: 0.36, blue: 0.44), Color(red: 0.20, green: 0.23, blue: 0.28)], startPoint: .top, endPoint: .bottom),
+                    LinearGradient(colors: [Color.white.opacity(0.72), QuotaOS.Colors.logoInk.opacity(0.10)], startPoint: .top, endPoint: .bottom) :
+                    LinearGradient(colors: [QuotaOS.Colors.purple, QuotaOS.Colors.campusLavender], startPoint: .top, endPoint: .bottom),
                     in: RoundedRectangle(cornerRadius: 16, style: .continuous)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .strokeBorder(isOnCooldown ? Color.white.opacity(0.08) : Color.white.opacity(0.2), lineWidth: 1.5)
+                        .strokeBorder(isOnCooldown ? QuotaOS.Colors.logoInk.opacity(0.10) : Color.white.opacity(0.28), lineWidth: 1.5)
                 )
-                .shadow(color: .black.opacity(isOnCooldown ? 0 : 0.15), radius: 6, y: 3)
+                .shadow(color: QuotaOS.Colors.purple.opacity(isOnCooldown ? 0 : 0.20), radius: 6, y: 3)
             }
             .buttonStyle(BouncyButtonStyle())
             .disabled(isOnCooldown)
@@ -641,7 +659,7 @@ struct PipeDexView: View {
                 
                 Text(bannerText)
                     .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(QuotaOS.Colors.logoInk)
                 
                 Spacer()
             }
@@ -649,9 +667,10 @@ struct PipeDexView: View {
             .padding(.vertical, 14)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(red: 0.12, green: 0.15, blue: 0.18))
-                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Color.white.opacity(0.12), lineWidth: 1.5))
-                    .shadow(color: .black.opacity(0.4), radius: 10, y: 6)
+                    .fill(Color.white.opacity(0.88))
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1.5))
+                    .shadow(color: QuotaOS.Colors.logoInk.opacity(0.14), radius: 10, y: 6)
             )
             .padding(.horizontal, 20)
             .padding(.top, 24)
@@ -661,7 +680,7 @@ struct PipeDexView: View {
     
     private var bandwidthAlertOverlay: some View {
         ZStack {
-            Color.black.opacity(0.6)
+            QuotaOS.Colors.logoInk.opacity(0.28)
                 .ignoresSafeArea()
                 .onTapGesture {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -678,11 +697,11 @@ struct PipeDexView: View {
                 VStack(spacing: 8) {
                     Text("OUT OF BANDWIDTH!")
                         .font(.system(size: 18, weight: .black, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(QuotaOS.Colors.logoInk)
                     
                     Text("You don't have the mental stamina for cold dialing! Wait for passive recharge (+1 per 3 seconds) or use the free Automated Dialer.")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.6))
+                        .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.62))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 12)
                 }
@@ -708,9 +727,10 @@ struct PipeDexView: View {
             .padding(24)
             .background(
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(Color(red: 0.14, green: 0.16, blue: 0.20))
-                    .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Color.white.opacity(0.12), lineWidth: 2))
-                    .shadow(color: .black.opacity(0.5), radius: 20, y: 12)
+                    .fill(Color.white.opacity(0.92))
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(QuotaOS.Colors.logoInk.opacity(0.12), lineWidth: 2))
+                    .shadow(color: QuotaOS.Colors.logoInk.opacity(0.20), radius: 20, y: 12)
             )
             .frame(width: 320)
         }

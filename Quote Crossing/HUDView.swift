@@ -15,13 +15,24 @@ struct HUDView: View {
     @ObservedObject var inventory: InventoryManager
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 10) {
-                bandwidthPill
-                commishPill
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
+                fiscalLine
+                bandwidthLine
             }
-            fiscalPill
+            Divider()
+                .frame(height: 36)
+                .overlay(.white.opacity(0.18))
+            cashLine
         }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 11)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.white.opacity(0.22), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.18), radius: 12, y: 7)
     }
 
     // MARK: Bandwidth
@@ -31,65 +42,52 @@ struct HUDView: View {
         return Double(state.bandwidth) / Double(state.maxBandwidth)
     }
 
-    private var bandwidthPill: some View {
-        HStack(spacing: 9) {
+    private var bandwidthLine: some View {
+        HStack(spacing: 8) {
             Image(systemName: "wifi")
-                .font(.system(size: 15, weight: .bold))
+                .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.white)
-            VStack(alignment: .leading, spacing: 4) {
-                Text("BANDWIDTH")
-                    .font(.system(size: 9, weight: .heavy, design: .rounded))
-                    .tracking(0.6)
-                    .foregroundStyle(.white.opacity(0.9))
-                StatBar(fraction: bandwidthFraction)
-                    .frame(width: 96, height: 7)
-            }
+                .frame(width: 18)
+            StatBar(fraction: bandwidthFraction)
+                .frame(width: 92, height: 5)
+            Text("\(state.bandwidth)")
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                .foregroundStyle(.white.opacity(0.72))
+                .monospacedDigit()
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 9)
-        .background(pillBackground(
-            top: Color(red: 0.30, green: 0.55, blue: 0.95),
-            bottom: Color(red: 0.21, green: 0.42, blue: 0.86)
-        ))
     }
 
     // MARK: Commish-Cash
 
-    private var commishPill: some View {
-        HStack(spacing: 6) {
+    private var cashLine: some View {
+        HStack(spacing: 7) {
             Image(systemName: "dollarsign.circle.fill")
-                .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(.white)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(QuotaOS.Colors.green)
             Text(state.commishCash.formatted(.number.grouping(.automatic)))
-                .font(.system(size: 16, weight: .heavy, design: .rounded))
+                .font(.system(size: 17, weight: .semibold, design: .rounded))
                 .foregroundStyle(.white)
                 .monospacedDigit()
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 11)
-        .background(pillBackground(
-            top: Color(red: 0.22, green: 0.80, blue: 0.56),
-            bottom: Color(red: 0.13, green: 0.66, blue: 0.45)
-        ))
     }
 
     // MARK: Fiscal clock
 
-    private var fiscalPill: some View {
+    private var fiscalLine: some View {
         let moment = state.fiscalMoment
         return HStack(spacing: 8) {
             Image(systemName: moment.isEOQBlizzard ? "snowflake" : "calendar")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(.white)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(moment.isEOQBlizzard ? QuotaOS.Colors.red : QuotaOS.Colors.gold)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(moment.hudLabel)
-                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundStyle(.white)
                 Text(moment.isEOQBlizzard ? "\(moment.quarter.title) - 1.5x Commish" : "\(moment.clockText) - \(moment.quarter.title)")
-                    .font(.system(size: 9, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.82))
+                    .font(.system(size: 9, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.62))
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
             }
@@ -103,21 +101,6 @@ struct HUDView: View {
                     .background(.white.opacity(0.92), in: Capsule())
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(pillBackground(
-            top: moment.isEOQBlizzard ? Color(red: 0.86, green: 0.28, blue: 0.36) : Color(red: 0.55, green: 0.42, blue: 0.92),
-            bottom: moment.isEOQBlizzard ? Color(red: 0.58, green: 0.16, blue: 0.28) : Color(red: 0.40, green: 0.30, blue: 0.78)
-        ))
-    }
-
-    // MARK: Shared styling
-
-    private func pillBackground(top: Color, bottom: Color) -> some View {
-        Capsule()
-            .fill(LinearGradient(colors: [top, bottom], startPoint: .top, endPoint: .bottom))
-            .overlay(Capsule().strokeBorder(.white.opacity(0.25), lineWidth: 1))
-            .shadow(color: .black.opacity(0.18), radius: 5, y: 3)
     }
 }
 
@@ -128,9 +111,13 @@ private struct StatBar: View {
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
-                Capsule().fill(.black.opacity(0.22))
+                Capsule().fill(.white.opacity(0.16))
                 Capsule()
-                    .fill(.white)
+                    .fill(
+                        LinearGradient(colors: [QuotaOS.Colors.mint, QuotaOS.Colors.blue],
+                                       startPoint: .leading,
+                                       endPoint: .trailing)
+                    )
                     .frame(width: max(0, min(1, fraction)) * geo.size.width)
             }
         }

@@ -26,6 +26,7 @@ final class GameSession {
     /// Non-nil while a Sales Encounter is active; observed by ContentView to
     /// present the battle screen.
     var activeEncounter: EncounterViewModel?
+    var nearbyEntrance: OfficeEntrance?
 
     init() {
         // Base look chosen during the Badging Process.
@@ -44,7 +45,6 @@ final class GameSession {
         } else {
             StatsStore.save(state.statsSnapshot)
         }
-        
         state.loadQuotes()
 
         scene = OverworldScene(gameState: state, gameInput: input,
@@ -52,6 +52,11 @@ final class GameSession {
 
         // Hook the overworld's random-encounter trigger up to the battle flow.
         scene.onEncounterTriggered = { [weak self] in self?.startEncounter() }
+        scene.onEntranceChanged = { [weak self] entrance in
+            self?.nearbyEntrance = entrance
+        }
+
+        applyBadgingBonuses(from: snapshot)
     }
 
     // MARK: - Pause control
@@ -63,6 +68,7 @@ final class GameSession {
         input.movement = .zero
         scene.haltPlayer()
         scene.isPaused = true
+        nearbyEntrance = nil
     }
 
     /// Resumes the overworld with a clean slate so it doesn't lurch.
@@ -99,6 +105,7 @@ final class GameSession {
             state.commishCash += reward
             state.lifetimeCommishCash += reward   // lifetime never decreases
             state.wins += 1
+            state.completeCareerStep(.salesEncounter)
         case .lose:
             state.losses += 1
         case .fled:
@@ -114,5 +121,34 @@ final class GameSession {
     func toggleEquip(_ item: WearableItem) {
         inventory.toggle(item)
         scene.applyWearables(inventory.equippedItems)
+    }
+
+    private func applyBadgingBonuses(from snapshot: AvatarSnapshot) {
+        switch snapshot.posture ?? .balancedOperator {
+        case .eagerIntern:
+            state.baseJargon += 2
+        case .balancedOperator:
+            break
+        case .tenuredSlouch:
+            state.baseMaxPatience += 8
+        }
+
+        switch snapshot.corporateSmile ?? .serviceSmirk {
+        case .genuineJoy:
+            state.baseRep += 1
+        case .serviceSmirk:
+            state.baseMaxBandwidth += 5
+        case .deadInside:
+            state.baseRep += 1
+        }
+
+        switch snapshot.starterOutfit {
+        case .overdressedRookie, .pastelJacket:
+            state.baseMaxPatience += 5
+        case .techBro, .quotaHoodie:
+            state.baseJargon += 3
+        case .minimalist, .campusCasual, .executiveBadge:
+            state.baseRep += 1
+        }
     }
 }

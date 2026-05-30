@@ -14,6 +14,7 @@ enum JargonElement: String, Codable, CaseIterable, Equatable {
     case hardware = "Hardware"
     case onPrem = "On-Prem"
     case saas = "SaaS"
+    case legacy = "Legacy"
 
     var symbolName: String {
         switch self {
@@ -21,6 +22,7 @@ enum JargonElement: String, Codable, CaseIterable, Equatable {
         case .hardware: "cpu.fill"
         case .onPrem: "server.rack"
         case .saas: "doc.plaintext.fill"
+        case .legacy: "externaldrive.fill"
         }
     }
 
@@ -30,6 +32,7 @@ enum JargonElement: String, Codable, CaseIterable, Equatable {
         case .hardware: Color(red: 0.94, green: 0.46, blue: 0.40)
         case .onPrem: Color(red: 0.66, green: 0.62, blue: 0.52)
         case .saas: Color(red: 0.62, green: 0.50, blue: 0.95)
+        case .legacy: Color(red: 0.48, green: 0.50, blue: 0.56)
         }
     }
 
@@ -138,7 +141,23 @@ struct JargonCard: Identifiable, Codable, Equatable {
         JargonCard(name: "Circle Back",
                    cost: 12,
                    healing: 60,
-                   element: .hardware)
+                   element: .hardware),
+        JargonCard(name: "Open the Kimono",
+                   cost: 15,
+                   damage: 20,
+                   element: .onPrem,
+                   damageType: .physical,
+                   inflictedStatuses: [StatusApplication(effect: .overencumbered, turns: 1)]),
+        JargonCard(name: "30,000-Foot View",
+                   cost: 20,
+                   damage: 55,
+                   element: .cloud,
+                   damageType: .electrical),
+        JargonCard(name: "Rightsizing",
+                   cost: 35,
+                   damage: 160,
+                   element: .legacy,
+                   damageType: .physical)
     ]
 
     init(contractWeapon weapon: ContractWeapon) {

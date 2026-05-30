@@ -114,6 +114,8 @@ enum WearableCatalog {
         statBoostType: .maxPatience, statBoostValue: 6,
         imageIcon: "headphones", tint: RGBAColor(0.16, 0.17, 0.22))
 
+    static let noiseCancelingHeadphones = headphones
+
     static let gradCap = WearableItem(
         id: "gradCap", name: "MBA Grad Cap", slot: .head,
         statBoostType: .jargon, statBoostValue: 7,
@@ -129,6 +131,13 @@ enum WearableCatalog {
         statBoostType: .maxPatience, statBoostValue: 15,
         imageIcon: "tshirt.fill", tint: RGBAColor(0.36, 0.45, 0.55))
 
+    static let patagoniaVCFleece = vcFleece
+
+    static let mustardTie = WearableItem(
+        id: "mustardTie", name: "Mustard-Stained Tie", slot: .lanyard,
+        statBoostType: .rep, statBoostValue: -1,
+        imageIcon: "lanyardcard.fill", tint: RGBAColor(0.86, 0.68, 0.18))
+
     static let diamondLanyard = WearableItem(
         id: "diamondLanyard", name: "5-Year Diamond Lanyard", slot: .lanyard,
         statBoostType: .rep, statBoostValue: 10,
@@ -137,7 +146,7 @@ enum WearableCatalog {
     static let all: [WearableItem] = [
         blueLightGlasses, aviators, spreadsheetSpecs,
         headphones, gradCap, foundersCrown,
-        vcFleece, diamondLanyard,
+        vcFleece, mustardTie, diamondLanyard,
     ]
 
     static func item(id: String) -> WearableItem? { all.first { $0.id == id } }

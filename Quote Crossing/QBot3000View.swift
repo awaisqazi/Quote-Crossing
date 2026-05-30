@@ -31,18 +31,14 @@ struct QBot3000View: View {
     
     var body: some View {
         ZStack {
-            // Futuristic B2B Industrial Dark Slate backplate
-            Color(red: 0.07, green: 0.08, blue: 0.11)
-                .ignoresSafeArea()
-            
-            // Cyber Grid background pattern
+            QuotaBackdrop(tint: QuotaOS.Colors.orange, tone: .campus)
             cyberGridPattern
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
                 // MARK: - Glassmorphic Header
                 headerView
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, 28)
                     .padding(.top, 12)
                     .padding(.bottom, 14)
                 
@@ -184,8 +180,13 @@ struct QBot3000View: View {
                 .padding(.bottom, 16)
                 .background(
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(Color(red: 0.12, green: 0.14, blue: 0.18))
-                        .shadow(color: .black.opacity(0.35), radius: 12, y: -8)
+                        .fill(Color.white.opacity(0.84))
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .stroke(QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1)
+                        )
+                        .shadow(color: QuotaOS.Colors.logoInk.opacity(0.12), radius: 14, y: -6)
                 )
                 .zIndex(8)
             }
@@ -200,7 +201,7 @@ struct QBot3000View: View {
                 
                 SKUBlockView(component: dragged, size: CGSize(width: blockW, height: blockH))
                     .scaleEffect(1.1)
-                    .shadow(color: .black.opacity(0.5), radius: 12, y: 10)
+                    .shadow(color: QuotaOS.Colors.logoInk.opacity(0.24), radius: 12, y: 10)
                     .position(viewModel.dragLocation)
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
@@ -221,6 +222,8 @@ struct QBot3000View: View {
                     .zIndex(160)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(QuotaBackdrop(tint: QuotaOS.Colors.orange, tone: .campus))
         .onPreferenceChange(CellFramePreferenceKey.self) { frames in
             cellFrames = frames
         }
@@ -235,11 +238,11 @@ struct QBot3000View: View {
                 Text("Q-BOT 3000 CONFIGURATOR")
                     .font(.system(size: 11, weight: .heavy, design: .rounded))
                     .tracking(1.2)
-                    .foregroundStyle(Color.orange)
+                    .foregroundStyle(QuotaOS.Colors.orange)
                 
                 Text("B2B Spatial Quote puzzle")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(QuotaOS.Colors.logoInk)
             }
             
             Spacer()
@@ -252,10 +255,11 @@ struct QBot3000View: View {
             }) {
                 Image(systemName: "questionmark.circle.fill")
                     .font(.system(size: 20))
-                    .foregroundStyle(Color.orange)
+                    .foregroundStyle(QuotaOS.Colors.orange)
                     .frame(width: 32, height: 32)
-                    .background(Color.white.opacity(0.08), in: Circle())
-                    .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 1))
+                    .background(Color.white.opacity(0.82), in: Circle())
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(Circle().stroke(QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1))
             }
             .buttonStyle(.plain)
             .padding(.trailing, 4)
@@ -268,10 +272,11 @@ struct QBot3000View: View {
             }) {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.74))
                     .frame(width: 32, height: 32)
-                    .background(Color.white.opacity(0.08), in: Circle())
-                    .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 1))
+                    .background(Color.white.opacity(0.82), in: Circle())
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(Circle().stroke(QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1))
             }
             .buttonStyle(.plain)
             .padding(.trailing, 4)
@@ -284,10 +289,11 @@ struct QBot3000View: View {
             }) {
                 Image(systemName: "xmark")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.74))
                     .frame(width: 32, height: 32)
-                    .background(Color.white.opacity(0.1), in: Circle())
-                    .overlay(Circle().stroke(Color.white.opacity(0.15), lineWidth: 1))
+                    .background(Color.white.opacity(0.82), in: Circle())
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(Circle().stroke(QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1))
             }
             .buttonStyle(.plain)
         }
@@ -306,13 +312,13 @@ struct QBot3000View: View {
                 var path = Path()
                 path.move(to: CGPoint(x: 0, y: CGFloat(y) * dy))
                 path.addLine(to: CGPoint(x: size.width, y: CGFloat(y) * dy))
-                context.stroke(path, with: .color(Color.white.opacity(0.015)), lineWidth: 1)
+                context.stroke(path, with: .color(QuotaOS.Colors.logoInk.opacity(0.030)), lineWidth: 1)
             }
             for x in 0...cols {
                 var path = Path()
                 path.move(to: CGPoint(x: CGFloat(x) * dx, y: 0))
                 path.addLine(to: CGPoint(x: CGFloat(x) * dx, y: size.height))
-                context.stroke(path, with: .color(Color.white.opacity(0.015)), lineWidth: 1)
+                context.stroke(path, with: .color(Color.white.opacity(0.56)), lineWidth: 1)
             }
         }
     }
@@ -328,7 +334,7 @@ struct QBot3000View: View {
                 Text("QUOTE Q-MARGIN")
                     .font(.system(size: 9, weight: .heavy, design: .rounded))
                     .tracking(0.6)
-                    .foregroundStyle(.white.opacity(0.5))
+                    .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.52))
                 
                 HStack(spacing: 3) {
                     Text("$")
@@ -336,7 +342,7 @@ struct QBot3000View: View {
                         .foregroundStyle(Color(red: 0.18, green: 0.72, blue: 0.48))
                     Text("\(details.qMargin)")
                         .font(.system(size: 24, weight: .black, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(QuotaOS.Colors.logoInk)
                         .monospacedDigit()
                 }
             }
@@ -348,19 +354,20 @@ struct QBot3000View: View {
                 Text("GRID STATUS")
                     .font(.system(size: 9, weight: .heavy, design: .rounded))
                     .tracking(0.6)
-                    .foregroundStyle(.white.opacity(0.5))
+                    .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.52))
                 
                 Text("\(36 - details.emptyCellsCount)/36 Cells Snapped")
                     .font(.system(size: 12, weight: .bold, design: .rounded))
-                    .foregroundStyle(details.emptyCellsCount == 0 ? Color.green : .white.opacity(0.8))
+                    .foregroundStyle(details.emptyCellsCount == 0 ? Color.green : QuotaOS.Colors.logoInk.opacity(0.76))
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color.white.opacity(0.03))
-                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Color.white.opacity(0.06), lineWidth: 1))
+                .fill(Color.white.opacity(0.76))
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(QuotaOS.Colors.logoInk.opacity(0.08), lineWidth: 1))
         )
     }
     
@@ -370,10 +377,20 @@ struct QBot3000View: View {
         let cellIndex = y * gridSize + x
         
         return RoundedRectangle(cornerRadius: 8)
-            .fill(Color(red: 0.12, green: 0.14, blue: 0.18))
+            .fill(
+                LinearGradient(
+                    colors: [
+                        Color.white.opacity(0.78),
+                        QuotaOS.Colors.campusBlue.opacity(0.22),
+                        QuotaOS.Colors.campusLavender.opacity(0.14)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.white.opacity(0.05), lineWidth: 1.2)
+                    .stroke(QuotaOS.Colors.logoInk.opacity(0.08), lineWidth: 1.2)
             )
             .frame(width: cellSize.width, height: cellSize.height)
             .background(
@@ -393,7 +410,7 @@ struct QBot3000View: View {
             Text("COMPATIBILITY SCOREBOARD")
                 .font(.system(size: 9, weight: .heavy, design: .rounded))
                 .tracking(0.8)
-                .foregroundStyle(.white.opacity(0.3))
+                .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.46))
                 .padding(.horizontal, 4)
             
             ScrollView(.horizontal, showsIndicators: false) {
@@ -406,10 +423,10 @@ struct QBot3000View: View {
                             Text("No adjacent synergies active. Snap blocks adjacent to link!")
                                 .font(.system(size: 11, weight: .medium))
                         }
-                        .foregroundStyle(.white.opacity(0.35))
+                        .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.48))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        .background(Color.white.opacity(0.01), in: Capsule())
+                        .background(QuotaOS.Colors.logoInk.opacity(0.05), in: Capsule())
                     }
                     
                     // Show Synergies
@@ -453,13 +470,14 @@ struct QBot3000View: View {
             Text("COMPONENT INVENTORY TRAY (Tap to rotate 90°)")
                 .font(.system(size: 9, weight: .heavy, design: .rounded))
                 .tracking(0.8)
-                .foregroundStyle(.white.opacity(0.3))
+                .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.46))
                 .padding(.horizontal, 4)
             
             ZStack {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color.white.opacity(0.02))
-                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Color.white.opacity(0.05), lineWidth: 1.2))
+                    .fill(Color.white.opacity(0.62))
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(QuotaOS.Colors.logoInk.opacity(0.08), lineWidth: 1.2))
                 
                 if viewModel.tray.isEmpty {
                     VStack {
@@ -468,7 +486,7 @@ struct QBot3000View: View {
                             .foregroundStyle(Color.green.opacity(0.6))
                         Text("All items placed on grid!")
                             .font(.system(size: 11, weight: .heavy, design: .rounded))
-                            .foregroundStyle(.white.opacity(0.4))
+                            .foregroundStyle(QuotaOS.Colors.logoInk.opacity(0.50))
                     }
                     .frame(height: 76)
                 } else {
@@ -581,12 +599,12 @@ struct QBot3000View: View {
                 }
             }
             .font(.system(size: 13, weight: .black, design: .rounded))
-            .foregroundStyle(.white)
+            .foregroundStyle(hasItems ? Color.white : QuotaOS.Colors.logoInk.opacity(0.50))
             .frame(maxWidth: .infinity)
             .frame(height: 52)
             .background(
                 !hasItems ?
-                LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.05)], startPoint: .top, endPoint: .bottom) :
+                LinearGradient(colors: [Color.white.opacity(0.80), QuotaOS.Colors.logoInk.opacity(0.10)], startPoint: .top, endPoint: .bottom) :
                 (isCompiling ?
                  LinearGradient(colors: [Color.cyan.opacity(0.6), Color.blue.opacity(0.6)], startPoint: .top, endPoint: .bottom) :
                  LinearGradient(colors: [Color.orange, Color(red: 0.85, green: 0.45, blue: 0.10)], startPoint: .top, endPoint: .bottom)),
@@ -594,7 +612,7 @@ struct QBot3000View: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(hasItems && !isCompiling ? Color.white.opacity(0.25) : Color.white.opacity(0.05), lineWidth: 1.5)
+                    .strokeBorder(hasItems && !isCompiling ? Color.white.opacity(0.25) : QuotaOS.Colors.logoInk.opacity(0.10), lineWidth: 1.5)
             )
             .shadow(color: hasItems && !isCompiling ? Color.orange.opacity(0.3) : .clear, radius: 8, y: 4)
         }
@@ -714,6 +732,11 @@ struct QBot3000View: View {
                         // Append to GameState compiled weapons list
                         gameState.compiledQuotes.append(weapon)
                         gameState.saveQuotes()
+                        gameState.completeCareerStep(.qBot)
+                        if weapon.qMargin < 250 {
+                            gameState.bidDesk.lastOutcome = "Low-margin quote routed to Bid Desk."
+                        }
+                        gameState.persistCareer()
                         
                         // Clear the view grid and reset puzzle tray for future configurarions
                         viewModel.resetTray()

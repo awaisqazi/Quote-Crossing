@@ -15,9 +15,13 @@ final class InventoryManager: ObservableObject {
     @Published private(set) var equippedBySlot: [EquipSlot: WearableItem] = [:]
 
     private let storeKey = "player.inventory.v1"
+    private let defaults: UserDefaults
     private var didSeed = false
 
-    init() { load() }
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        load()
+    }
 
     // MARK: Queries
 
@@ -32,6 +36,10 @@ final class InventoryManager: ObservableObject {
 
     func isEquipped(_ item: WearableItem) -> Bool {
         equippedBySlot[item.slot]?.id == item.id
+    }
+
+    func ownsItem(id: String) -> Bool {
+        ownedItems.contains { $0.id == id }
     }
 
     /// Sum of equipped boosts of a given type — used by GameState to recompute
@@ -54,6 +62,14 @@ final class InventoryManager: ObservableObject {
         save()
     }
 
+    @discardableResult
+    func grant(_ item: WearableItem) -> Bool {
+        guard !ownsItem(id: item.id) else { return false }
+        ownedItems.append(item)
+        save()
+        return true
+    }
+
     func unequip(_ slot: EquipSlot) {
         equippedBySlot[slot] = nil
         save()
@@ -61,16 +77,13 @@ final class InventoryManager: ObservableObject {
 
     // MARK: Seeding
 
-    /// First-run loadout: grant a starter catalog to browse and equip whatever
-    /// the player picked during the Badging Process. No-op if data was loaded.
+    /// First-run loadout: starts empty so wearables enter through the Outfitter,
+    /// Swag Vending, or rewards instead of being free during badging.
     func configureForNewGameIfNeeded(starters: [Accessory]) {
         guard !didSeed else { return }
         didSeed = true
-        ownedItems = WearableCatalog.all
-        for accessory in starters {
-            let item = WearableCatalog.item(for: accessory)
-            equippedBySlot[item.slot] = item
-        }
+        ownedItems = []
+        equippedBySlot = [:]
         save()
     }
 
@@ -85,12 +98,12 @@ final class InventoryManager: ObservableObject {
         let byRaw = Dictionary(uniqueKeysWithValues: equippedBySlot.map { ($0.key.rawValue, $0.value) })
         let snap = Snapshot(owned: ownedItems, equipped: byRaw)
         if let data = try? JSONEncoder().encode(snap) {
-            UserDefaults.standard.set(data, forKey: storeKey)
+            defaults.set(data, forKey: storeKey)
         }
     }
 
     private func load() {
-        guard let data = UserDefaults.standard.data(forKey: storeKey),
+        guard let data = defaults.data(forKey: storeKey),
               let snap = try? JSONDecoder().decode(Snapshot.self, from: data) else { return }
         ownedItems = snap.owned
         equippedBySlot = Dictionary(uniqueKeysWithValues:

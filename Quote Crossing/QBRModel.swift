@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// Card finish tiers — upgrade automatically at lifetime-earnings milestones.
-enum CardTier: Int, CaseIterable, Comparable {
+enum CardTier: Int, CaseIterable, Comparable, Codable {
     case matte, glossy, holographic, diamond
 
     static func < (a: CardTier, b: CardTier) -> Bool { a.rawValue < b.rawValue }
@@ -73,6 +73,16 @@ enum StatsStore {
         var wins: Int
         var losses: Int
         var fiscalYearStartedAt: Date?
+        var spiffCoins: Int?
+        var scrapBasePay: Int?
+        var gachaPullsSinceFiveStar: Int?
+        var gachaFeaturedGuaranteed: Bool?
+        var career: CareerState?
+        var prospecting: ProspectingState?
+        var bidDesk: BidDeskState?
+        var expenseRun: ExpenseRunState?
+        var treasury: TreasuryState?
+        var endgame: EndgameState?
     }
 
     static func save(_ snapshot: Snapshot) {

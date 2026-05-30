@@ -133,9 +133,9 @@ final class QBotViewModel: ObservableObject {
         tray = [
             SKUComponent(name: "SaaS License", baseDamage: 45, width: 1, height: 2, type: .saasLicense),
             SKUComponent(name: "Premium Server", baseDamage: 150, width: 3, height: 1, type: .premiumServer),
-            SKUComponent(name: "Legacy Database", baseDamage: 80, width: 2, height: 2, type: .legacyDatabase),
-            SKUComponent(name: "Cloud Storage", baseDamage: 15, width: 1, height: 1, type: .cloudStorage),
-            SKUComponent(name: "Middleware Adapter", baseDamage: 110, width: 3, height: 1, type: .middlewareAdapter)
+            SKUComponent(name: "Legacy Database", baseDamage: 120, width: 2, height: 3, type: .legacyDatabase),
+            SKUComponent(name: "Cloud Storage", baseDamage: 80, width: 2, height: 2, type: .cloudStorage),
+            SKUComponent(name: "Middleware Adapter", baseDamage: 15, width: 1, height: 1, type: .middlewareAdapter)
         ]
         saveState()
     }

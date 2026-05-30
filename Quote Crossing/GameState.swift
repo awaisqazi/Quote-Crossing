@@ -15,6 +15,13 @@ final class GameState {
     // Depletable / spent values.
     var bandwidth: Int = 80          // current stamina
     var commishCash: Int = 1_250     // current wealth currency
+    var spiffCoins: Int = 500        // gacha / swag currency
+    var scrapBasePay: Int = 0        // duplicate low-rarity refund currency
+    var basePay: Int = 2_500         // fictional treasury / survival money
+
+    // Swag Vending Machine pity state.
+    var gachaPullsSinceFiveStar: Int = 0
+    var gachaFeaturedGuaranteed: Bool = false
 
     // Compiled quotes weapons list
     var compiledQuotes: [ContractWeapon] = []
@@ -34,6 +41,14 @@ final class GameState {
     var baseMaxPatience: Int = 50
     var baseJargon: Int = 20
     var baseRep: Int = 1
+
+    // Full ecosystem progression systems.
+    var career = CareerState()
+    var prospecting = ProspectingState()
+    var bidDesk = BidDeskState()
+    var expenseRun = ExpenseRunState()
+    var treasury = TreasuryState()
+    var endgame = EndgameState()
 
     /// Source of equipped stat boosts. Weak: the GameSession owns both, and the
     /// inventory never points back here, so this avoids any retain cycle.
@@ -73,7 +88,13 @@ final class GameState {
 
     var statsSnapshot: StatsStore.Snapshot {
         .init(commishCash: commishCash, lifetimeCommishCash: lifetimeCommishCash,
-              wins: wins, losses: losses, fiscalYearStartedAt: fiscalYearStartedAt)
+              wins: wins, losses: losses, fiscalYearStartedAt: fiscalYearStartedAt,
+              spiffCoins: spiffCoins, scrapBasePay: scrapBasePay,
+              gachaPullsSinceFiveStar: gachaPullsSinceFiveStar,
+              gachaFeaturedGuaranteed: gachaFeaturedGuaranteed,
+              career: career, prospecting: prospecting,
+              bidDesk: bidDesk, expenseRun: expenseRun,
+              treasury: treasury, endgame: endgame)
     }
 
     func applyStats(_ s: StatsStore.Snapshot) {
@@ -82,7 +103,33 @@ final class GameState {
         wins = s.wins
         losses = s.losses
         fiscalYearStartedAt = s.fiscalYearStartedAt ?? Date()
+        spiffCoins = s.spiffCoins ?? spiffCoins
+        scrapBasePay = s.scrapBasePay ?? scrapBasePay
+        gachaPullsSinceFiveStar = s.gachaPullsSinceFiveStar ?? 0
+        gachaFeaturedGuaranteed = s.gachaFeaturedGuaranteed ?? false
+        career = s.career ?? CareerState()
+        prospecting = s.prospecting ?? ProspectingState()
+        bidDesk = s.bidDesk ?? BidDeskState()
+        expenseRun = s.expenseRun ?? ExpenseRunState()
+        treasury = s.treasury ?? TreasuryState()
+        endgame = s.endgame ?? EndgameState()
+        basePay = treasury.basePayReserve
         fiscalNow = Date()
+    }
+
+    func persistCareer() {
+        treasury.basePayReserve = basePay
+        StatsStore.save(statsSnapshot)
+    }
+
+    func completeCareerStep(_ step: CareerStep) {
+        career.complete(step)
+        persistCareer()
+    }
+
+    func openRoute(_ route: GameRoute) {
+        career.lastOpenedRoute = route
+        persistCareer()
     }
 
     func tickFiscalClock(now: Date = Date()) {

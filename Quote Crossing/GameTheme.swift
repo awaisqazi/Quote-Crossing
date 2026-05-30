@@ -3,8 +3,7 @@
 //  Quote Crossing
 //
 //  Central tuning + palette shared between the SpriteKit world and the SwiftUI
-//  overlay. Keeping these in one place makes the "bright, flat-vector" art
-//  direction easy to iterate on.
+//  overlay.
 //
 
 import SpriteKit
@@ -42,21 +41,36 @@ enum PhysicsCategory {
     static let lounge: UInt32 = 1 << 2
 }
 
-/// Flat-vector colour palette. SpriteKit side uses `SKColor` (== `UIColor` on iOS).
+/// SpriteKit side uses `SKColor` (== `UIColor` on iOS).
 enum Palette {
     // World
-    static let sceneBackground = SKColor(red: 0.13, green: 0.15, blue: 0.20, alpha: 1)
+    static let sceneBackground = SKColor(red: 0.91, green: 0.95, blue: 0.98, alpha: 1)
 
-    static let floor      = SKColor(red: 0.91, green: 0.92, blue: 0.95, alpha: 1)
-    static let floorLine  = SKColor(red: 0.83, green: 0.85, blue: 0.91, alpha: 1)
+    static let floor      = SKColor(red: 0.89, green: 0.95, blue: 0.98, alpha: 1)
+    static let floorGlow  = SKColor(red: 0.96, green: 0.99, blue: 1.00, alpha: 1)
+    static let floorLine  = SKColor(red: 0.73, green: 0.78, blue: 0.90, alpha: 1)
+    static let floorWarm  = SKColor(red: 0.99, green: 0.92, blue: 0.84, alpha: 1)
 
-    static let wall       = SKColor(red: 0.27, green: 0.31, blue: 0.42, alpha: 1)
-    static let wallTop    = SKColor(red: 0.37, green: 0.42, blue: 0.55, alpha: 1)
+    static let wall       = SKColor(red: 0.72, green: 0.74, blue: 0.91, alpha: 1)
+    static let wallTop    = SKColor(red: 0.98, green: 0.70, blue: 0.80, alpha: 1)
+    static let wallShadow = SKColor(red: 0.27, green: 0.18, blue: 0.36, alpha: 0.30)
+    static let wallBrass  = SKColor(red: 0.98, green: 0.78, blue: 0.42, alpha: 1)
 
-    static let lounge      = SKColor(red: 0.58, green: 0.80, blue: 0.50, alpha: 1)
-    static let loungeBlade = SKColor(red: 0.39, green: 0.65, blue: 0.35, alpha: 1)
+    static let carpet      = SKColor(red: 0.73, green: 0.91, blue: 0.88, alpha: 1)
+    static let carpetLine  = SKColor(red: 0.54, green: 0.74, blue: 0.92, alpha: 1)
+    static let carpetGold  = SKColor(red: 0.98, green: 0.82, blue: 0.48, alpha: 1)
+    static let carpetWine  = SKColor(red: 0.86, green: 0.74, blue: 0.94, alpha: 1)
+
+    static let lounge      = SKColor(red: 0.54, green: 0.86, blue: 0.60, alpha: 1)
+    static let loungeBlade = SKColor(red: 0.77, green: 0.96, blue: 0.66, alpha: 1)
+    static let plantDark   = SKColor(red: 0.25, green: 0.58, blue: 0.40, alpha: 1)
+    static let plantLight  = SKColor(red: 0.67, green: 0.91, blue: 0.72, alpha: 1)
+    static let fixtureInk  = SKColor(red: 0.16, green: 0.09, blue: 0.20, alpha: 1)
+    static let fixtureTop  = SKColor(red: 0.99, green: 0.96, blue: 0.90, alpha: 1)
+    static let glass       = SKColor(red: 0.62, green: 0.88, blue: 0.95, alpha: 0.64)
+    static let shadow      = SKColor(red: 0.18, green: 0.10, blue: 0.22, alpha: 0.20)
 
     // Player
     static let playerFill   = SKColor(red: 0.99, green: 0.78, blue: 0.36, alpha: 1)
-    static let playerStroke = SKColor(red: 0.20, green: 0.22, blue: 0.30, alpha: 1)
+    static let playerStroke = SKColor(red: 0.15, green: 0.08, blue: 0.18, alpha: 1)
 }

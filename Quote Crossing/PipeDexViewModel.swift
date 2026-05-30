@@ -260,6 +260,16 @@ final class PipeDexViewModel: ObservableObject {
         saveState()
         return true
     }
+
+    /// Inserts a lead discovered by the Networking Lounge prospecting scan.
+    @discardableResult
+    func addProspectedLead(level: Int) -> Bool {
+        guard let emptyIndex = firstEmptyGridIndex() else { return false }
+        grid[emptyIndex] = LeadItem(level: max(1, min(10, level)))
+        selectedIndex = emptyIndex
+        saveState()
+        return true
+    }
     
     /// Spawns a Lead (Level 1, 2, or 3) for free, on a 5-minute cooldown
     func triggerAutomatedLeadDialer() -> Bool {
@@ -287,6 +297,7 @@ final class PipeDexViewModel: ObservableObject {
         // Award to GameState
         state.commishCash += reward
         state.lifetimeCommishCash += reward
+        state.completeCareerStep(.pipeDex)
         
         // Empty slot
         grid[index] = nil
