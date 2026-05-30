@@ -44,6 +44,8 @@ final class GameSession {
         } else {
             StatsStore.save(state.statsSnapshot)
         }
+        
+        state.loadQuotes()
 
         scene = OverworldScene(gameState: state, gameInput: input,
                                avatar: snapshot, wearables: inventory.equippedItems)
@@ -82,7 +84,8 @@ final class GameSession {
         let vm = EncounterViewModel(
             prospect: EnemyProspect.random().adjusted(for: state.fiscalMoment),
             maxPatience: state.maxPatience,
-            maxJargon: state.jargon
+            maxJargon: state.jargon,
+            gameState: state
         ) { [weak self] outcome in
             self?.finishEncounter(outcome)
         }

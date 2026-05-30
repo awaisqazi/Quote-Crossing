@@ -19,6 +19,10 @@ struct ContentView: View {
     @State private var showWardrobe = false
     @State private var showQBR = false
     @State private var showPauseMenu = false
+    @State private var showPipeDex = false
+    @State private var pipeDexVM = PipeDexViewModel()
+    @State private var showQBot = false
+    @State private var qBotVM = QBotViewModel()
 
     @AppStorage("hasCreatedCharacter") private var hasCreatedCharacter = true
 
@@ -26,7 +30,7 @@ struct ContentView: View {
 
     /// The overworld controls are live only when no full-screen UI is up.
     private var controlsEnabled: Bool {
-        session.activeEncounter == nil && !showWardrobe && !showQBR && !showPauseMenu
+        session.activeEncounter == nil && !showWardrobe && !showQBR && !showPauseMenu && !showPipeDex && !showQBot
     }
 
     var body: some View {
@@ -45,6 +49,7 @@ struct ContentView: View {
                     HUDView(state: session.state, inventory: session.inventory)
                     Spacer()
                     HStack(spacing: 12) {
+                        qbotButton
                         qbrButton
                         pauseButton
                     }
@@ -54,15 +59,18 @@ struct ContentView: View {
                 Spacer()
             }
 
-            // Controls: joystick (bottom-left) + wardrobe button (bottom-right).
+            // Controls: joystick (bottom-left) + actions group (bottom-right).
             VStack {
                 Spacer()
                 HStack(alignment: .bottom) {
                     VirtualJoystick(input: session.input, enabled: controlsEnabled)
                         .padding(.leading, 28)
                     Spacer()
-                    wardrobeButton
-                        .padding(.trailing, 28)
+                    HStack(spacing: 14) {
+                        pipeDexButton
+                        wardrobeButton
+                    }
+                    .padding(.trailing, 28)
                 }
                 .padding(.bottom, 30)
             }
@@ -83,6 +91,41 @@ struct ContentView: View {
                 )
                 .padding(.top, 64)
                 .transition(.move(edge: .bottom))
+            }
+
+            // Slide-up Pipe-Dex mini-game.
+            if showPipeDex {
+                Color.black.opacity(0.45)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture { closePipeDex() }
+
+                PipeDexView(
+                    viewModel: pipeDexVM,
+                    gameState: session.state,
+                    inventory: session.inventory,
+                    onClose: { closePipeDex() }
+                )
+                .padding(.top, 40)
+                .transition(.move(edge: .bottom))
+                .zIndex(40)
+            }
+
+            // Slide-up Q-Bot 3000 terminal.
+            if showQBot {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture { closeQBot() }
+
+                QBot3000View(
+                    viewModel: qBotVM,
+                    gameState: session.state,
+                    onClose: { closeQBot() }
+                )
+                .padding(.top, 40)
+                .transition(.move(edge: .bottom))
+                .zIndex(45)
             }
 
             // Sales Encounter (turn-based battle) — covers everything while active.
@@ -241,6 +284,58 @@ struct ContentView: View {
 
     private func closeWardrobe() {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.9)) { showWardrobe = false }
+        session.resumeWorld()
+    }
+
+    private var pipeDexButton: some View {
+        Button {
+            session.pauseWorld()
+            withAnimation(.spring(response: 0.42, dampingFraction: 0.86)) { showPipeDex = true }
+        } label: {
+            Image(systemName: "funnel.fill")
+                .font(.system(size: 24, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 60, height: 60)
+                .background(
+                    LinearGradient(colors: [Color(red: 0.28, green: 0.52, blue: 0.92),
+                                            Color(red: 0.18, green: 0.38, blue: 0.80)],
+                                   startPoint: .top, endPoint: .bottom),
+                    in: Circle()
+                )
+                .overlay(Circle().stroke(.white.opacity(0.3), lineWidth: 2))
+                .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func closePipeDex() {
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.9)) { showPipeDex = false }
+        session.resumeWorld()
+    }
+
+    private var qbotButton: some View {
+        Button {
+            session.pauseWorld()
+            withAnimation(.spring(response: 0.42, dampingFraction: 0.86)) { showQBot = true }
+        } label: {
+            Image(systemName: "cpu.fill")
+                .font(.system(size: 22, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 50, height: 50)
+                .background(
+                    LinearGradient(colors: [Color.orange, Color(red: 0.85, green: 0.45, blue: 0.10)],
+                                   startPoint: .top, endPoint: .bottom),
+                    in: RoundedRectangle(cornerRadius: 15, style: .continuous)
+                )
+                .overlay(RoundedRectangle(cornerRadius: 15, style: .continuous)
+                    .stroke(.white.opacity(0.3), lineWidth: 2))
+                .shadow(color: .black.opacity(0.25), radius: 5, y: 3)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func closeQBot() {
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.9)) { showQBot = false }
         session.resumeWorld()
     }
 }

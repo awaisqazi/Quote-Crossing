@@ -16,6 +16,9 @@ final class GameState {
     var bandwidth: Int = 80          // current stamina
     var commishCash: Int = 1_250     // current wealth currency
 
+    // Compiled quotes weapons list
+    var compiledQuotes: [ContractWeapon] = []
+
     // Career / lifetime stats (persisted; shown on the QBR card).
     var lifetimeCommishCash: Int = 1_250
     var wins: Int = 0
@@ -84,5 +87,24 @@ final class GameState {
 
     func tickFiscalClock(now: Date = Date()) {
         fiscalNow = now
+    }
+
+    func saveQuotes() {
+        if let encoded = try? JSONEncoder().encode(compiledQuotes) {
+            UserDefaults.standard.set(encoded, forKey: "player.qbot.quotes.v1")
+        }
+    }
+
+    func loadQuotes() {
+        guard let data = UserDefaults.standard.data(forKey: "player.qbot.quotes.v1"),
+              let decoded = try? JSONDecoder().decode([ContractWeapon].self, from: data) else {
+            // Seed starter contract weapons so player has combat options
+            compiledQuotes = [
+                ContractWeapon(name: "Starter SaaS Quote", qMargin: 110, baseDamage: 45, jargonCost: 8)
+            ]
+            saveQuotes()
+            return
+        }
+        compiledQuotes = decoded
     }
 }
