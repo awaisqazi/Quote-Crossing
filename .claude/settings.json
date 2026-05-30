@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 - /Users/fezqazi/.claude/projects/-Users-fezqazi-Documents-Quote-Crossing-Quote-Crossing/63604953-d691-4970-a5f2-0691b45594aa/subagents/workflows/wf_690a8b66-f08/journal.jsonl)",
+      "Bash(python3 - /Users/fezqazi/.claude/projects/-Users-fezqazi-Documents-Quote-Crossing-Quote-Crossing/63604953-d691-4970-a5f2-0691b45594aa/subagents/workflows/wf_690a8b66-f08)",
+      "Bash(python3 -)"
+    ]
+  }
+}
